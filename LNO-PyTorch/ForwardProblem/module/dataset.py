@@ -85,7 +85,7 @@ class LNO_dataset(torch.utils.data.Dataset):
             self.y1 = torch.cat((self.x, self.y1), dim=-1)
         self.y2 = torch.tensor(self.dataset['y2']).float()
         self.normalizer = LNO_dataset.Normalizer(self.x, self.y1, self.y2)
-        if data_name in ["Darcy", "Elasticity"]:
+        if data_name in ["Darcy", "Elasticity", "Plasticity"]:
             self.x = self.normalizer.apply_x(self.x)
             self.y1 = self.normalizer.apply_y1(self.y1)
             self.y2 = self.normalizer.apply_y2(self.y2)

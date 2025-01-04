@@ -6,9 +6,9 @@
     },
     "model": {
         "name": "LNO",
-        "n_block": 8,
+        "n_block": 4,
         "n_mode": 256,
-        "n_dim" : 128,
+        "n_dim" : 192,
         "n_head" : 8,
         "n_layer": 3,
         "attn": "Attention_Vanilla",

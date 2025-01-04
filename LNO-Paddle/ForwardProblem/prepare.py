@@ -11,8 +11,10 @@ arg = parser.parse_args()
 
 def load_Darcy(path, src_res, obj_res):
     matdata = scio.loadmat(path)
-    y1 = matdata['coeff'][:, ::src_res//obj_res, ::src_res/obj_res][:, obj_res, obj_res]
-    y2 = matdata['sol'][:, ::src_res//obj_res, ::src_res/obj_res][:, obj_res, obj_res]
+    y1 = matdata['coeff']
+    y1 = y1[:, ::(src_res-1)//(obj_res-1), ::(src_res-1)//(obj_res-1)][:, :obj_res, :obj_res]
+    y2 = matdata['sol']
+    y2 =y2[:, ::(src_res-1)//(obj_res-1), ::(src_res-1)//(obj_res-1)][:, :obj_res, :obj_res]
     x = np.reshape(np.dstack(np.meshgrid(np.linspace(0, 1, obj_res), np.linspace(0, 1, obj_res))), (obj_res, obj_res, 2))
     x = np.expand_dims(x, axis=0)
     x = np.repeat(x, y1.shape[0], axis=0)
@@ -68,16 +70,22 @@ if __name__ == "__main__":
             SRC_RES = 64
             TRAIN_NUM = 1000
             VAL_NUM = 200
-            x, y1, y2 = load_NS2d("./datas/NavierStokes_V1e-5_N1200_T20")
+            x, y1, y2 = load_NS2d("./datas/NavierStokes_V1e-5_N1200_T20", SRC_RES)
             split_and_save(arg.data_name, x, y1, y2, TRAIN_NUM, VAL_NUM)
         elif arg.data_name == "Airfoil":
             TRAIN_NUM = 1000
             VAL_NUM = 200
-            Q = np.expand_dims(np.load("./datas/NACA_Cylinder_Q.npy")[:,4,:,:], axis=-1)
-            X = np.expand_dims(np.load("./datas/NACA_Cylinder_X.npy"), axis=-1)
-            Y = np.expand_dims(np.load("./datas/NACA_Cylinder_Y.npy"), axis=-1)
-            x = np.concatenate((X, Y), axis=-1)
-            y1 = x
+            Q = np.expand_dims(np.load("data/NACA_Cylinder_Q.npy")[:,4,:,:], axis=-1)
+            X = np.expand_dims(np.load("data/NACA_Cylinder_X.npy"), axis=-1)
+            Y = np.expand_dims(np.load("data/NACA_Cylinder_Y.npy"), axis=-1)
+            x = []
+            for x1 in np.linspace(0, 1, 221):
+                for x2 in np.linspace(0, 1, 51):
+                        x.append([x1, x2])
+            x = np.reshape(np.array(x), (221, 51, 2))
+            x = np.expand_dims(x, axis=0)
+            x = np.repeat(x, 1200, axis=0)
+            y1 = np.concatenate((X, Y), axis=-1)
             y2 = Q
             split_and_save(arg.data_name, x, y1, y2, TRAIN_NUM, VAL_NUM)
         elif arg.data_name == "Elasticity":
@@ -121,11 +129,17 @@ if __name__ == "__main__":
         elif arg.data_name == "Pipe":
             TRAIN_NUM = 1000
             VAL_NUM = 200
-            Q = np.expand_dims(np.load("./datas/Pipe_Q.npy")[:,0], axis=-1)
-            X = np.expand_dims(np.load("./datas/Pipe_X.npy"), axis=-1)
-            Y = np.expand_dims(np.load("./datas/Pipe_Y.npy"), axis=-1)
-            x = np.concatenate((X, Y), axis=-1)
-            y1 = x
+            Q = np.expand_dims(np.load("data/Pipe_Q.npy")[:,0], axis=-1)
+            X = np.expand_dims(np.load("data/Pipe_X.npy"), axis=-1)
+            Y = np.expand_dims(np.load("data/Pipe_Y.npy"), axis=-1)
+            x = []
+            for x1 in np.linspace(0, 1, 129):
+                for x2 in np.linspace(0, 1, 129):
+                    x.append([x1, x2])
+            x = np.reshape(np.array(x), (129, 129, 2))
+            x = np.expand_dims(x, axis=0)
+            x = np.repeat(x, 2310, axis=0)
+            y1 = np.concatenate((X, Y), axis=-1)
             y2 = Q
             split_and_save(arg.data_name, x, y1, y2, TRAIN_NUM, VAL_NUM)
         else:

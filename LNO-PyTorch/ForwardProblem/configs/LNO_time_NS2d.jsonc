@@ -28,7 +28,7 @@
         "name": "OneCycle",
         "div_factor": 1e4,
         "final_div_factor": 1e4,
-        "pct_start": 0.5
+        "pct_start": 0.2
     },
     "train":{
         "epoch": 500,

@@ -47,21 +47,21 @@ def split_and_save(data_name, x, y1, y2, train_num, val_num):
     train_data = {"x":train_x, "y1":train_y1, "y2":train_y2}
     val_data = {"x":val_x, "y1":val_y1, "y2":val_y2}
     
-    np.save("./datas/{}_train".format(data_name), train_data)
-    np.save("./datas/{}_val".format(data_name), val_data)
+    np.save("./MetaData/{}_train".format(data_name), train_data)
+    np.save("./MetaData/{}_val".format(data_name), val_data)
     
     
 if __name__ == "__main__":
-    if not os.path.exists("./datas/{}_train.npy".format(arg.data_name)) or \
-        not os.path.exists("./datas/{}_val.npy".format(arg.data_name)):
+    if not os.path.exists("./MetaData/{}_train.npy".format(arg.data_name)) or \
+        not os.path.exists("./MetaData/{}_val.npy".format(arg.data_name)):
         print("Preparing data...")
         if arg.data_name == "Darcy":
-            SRC_RES = 421
-            OBJ_RES = 85
-            TRAIN_NUM = 1000
-            VAL_NUM = 200
-            x, y1, y2 = load_Darcy("./datas/piececonst_r{}_N1024_smooth1.mat".format(SRC_RES), SRC_RES, OBJ_RES)
-            tx, ty1, ty2 = load_Darcy("./datas/piececonst_r{}_N1024_smooth2.mat".format(SRC_RES), SRC_RES, OBJ_RES)
+            SRC_RES = 241
+            OBJ_RES = 241
+            TRAIN_NUM = 1024
+            VAL_NUM = 1024
+            x, y1, y2 = load_Darcy("./MetaData/piececonst_r{}_N1024_smooth1.mat".format(SRC_RES), SRC_RES, OBJ_RES)
+            tx, ty1, ty2 = load_Darcy("./MetaData/piececonst_r{}_N1024_smooth2.mat".format(SRC_RES), SRC_RES, OBJ_RES)
             x = np.concatenate((x, tx), axis=0)
             y1 = np.concatenate((y1, ty1), axis=0)
             y2 = np.concatenate((y2, ty2), axis=0)
@@ -70,25 +70,31 @@ if __name__ == "__main__":
             SRC_RES = 64
             TRAIN_NUM = 1000
             VAL_NUM = 200
-            x, y1, y2 = load_NS2d("./datas/NavierStokes_V1e-5_N1200_T20", SRC_RES)
+            x, y1, y2 = load_NS2d("./MetaData/NavierStokes_V1e-5_N1200_T20", SRC_RES)
             split_and_save(arg.data_name, x, y1, y2, TRAIN_NUM, VAL_NUM)
         elif arg.data_name == "Airfoil":
             TRAIN_NUM = 1000
             VAL_NUM = 200
-            Q = np.expand_dims(np.load("./datas/NACA_Cylinder_Q.npy")[:,4,:,:], axis=-1)
-            X = np.expand_dims(np.load("./datas/NACA_Cylinder_X.npy"), axis=-1)
-            Y = np.expand_dims(np.load("./datas/NACA_Cylinder_Y.npy"), axis=-1)
-            x = np.concatenate((X, Y), axis=-1)
-            y1 = x
+            Q = np.expand_dims(np.load("./MetaData/NACA_Cylinder_Q.npy")[:,4,:,:], axis=-1)
+            X = np.expand_dims(np.load("./MetaData/NACA_Cylinder_X.npy"), axis=-1)
+            Y = np.expand_dims(np.load("./MetaData/NACA_Cylinder_Y.npy"), axis=-1)
+            x = []
+            for x1 in np.linspace(0, 1, 221):
+                for x2 in np.linspace(0, 1, 51):
+                        x.append([x1, x2])
+            x = np.reshape(np.array(x), (221, 51, 2))
+            x = np.expand_dims(x, axis=0)
+            x = np.repeat(x, 1200, axis=0)
+            y1 = np.concatenate((X, Y), axis=-1)
             y2 = Q
             split_and_save(arg.data_name, x, y1, y2, TRAIN_NUM, VAL_NUM)
         elif arg.data_name == "Elasticity":
             TRAIN_NUM = 1000
-            VAL_NUM = 200
-            rr = np.load("./datas/Random_UnitCell_rr_10.npy")
-            sigma = np.load("./datas/Random_UnitCell_sigma_10.npy")
-            theta = np.load("./datas/Random_UnitCell_theta_10.npy")
-            XY = np.load("./datas/Random_UnitCell_XY_10.npy")
+            VAL_NUM = 1000
+            rr = np.load("./MetaData/Random_UnitCell_rr_10.npy")
+            sigma = np.load("./MetaData/Random_UnitCell_sigma_10.npy")
+            theta = np.load("./MetaData/Random_UnitCell_theta_10.npy")
+            XY = np.load("./MetaData/Random_UnitCell_XY_10.npy")
             XY = np.transpose(XY, (2, 0, 1))
             sigma = np.transpose(sigma, (1, 0))
             sigma = np.expand_dims(sigma, axis=2)
@@ -110,7 +116,7 @@ if __name__ == "__main__":
             x = np.reshape(np.array(x), (SRC_RES1, SRC_RES2, SRC_RES3, 3))
             x = np.expand_dims(x, axis=0)
             x = np.repeat(x, TRAIN_NUM + VAL_NUM, axis=0)
-            matdata = scio.loadmat("./datas/plas_N987_T20.mat")
+            matdata = scio.loadmat("./MetaData/plas_N987_T20.mat")
             input = matdata["input"]
             output = matdata["output"]
             y1 = np.expand_dims(input, axis=-1)
@@ -123,11 +129,17 @@ if __name__ == "__main__":
         elif arg.data_name == "Pipe":
             TRAIN_NUM = 1000
             VAL_NUM = 200
-            Q = np.expand_dims(np.load("./datas/Pipe_Q.npy")[:,0], axis=-1)
-            X = np.expand_dims(np.load("./datas/Pipe_X.npy"), axis=-1)
-            Y = np.expand_dims(np.load("./datas/Pipe_Y.npy"), axis=-1)
-            x = np.concatenate((X, Y), axis=-1)
-            y1 = x
+            Q = np.expand_dims(np.load("./MetaData/Pipe_Q.npy")[:,0], axis=-1)
+            X = np.expand_dims(np.load("./MetaData/Pipe_X.npy"), axis=-1)
+            Y = np.expand_dims(np.load("./MetaData/Pipe_Y.npy"), axis=-1)
+            x = []
+            for x1 in np.linspace(0, 1, 129):
+                for x2 in np.linspace(0, 1, 129):
+                    x.append([x1, x2])
+            x = np.reshape(np.array(x), (129, 129, 2))
+            x = np.expand_dims(x, axis=0)
+            x = np.repeat(x, 2310, axis=0)
+            y1 = np.concatenate((X, Y), axis=-1)
             y2 = Q
             split_and_save(arg.data_name, x, y1, y2, TRAIN_NUM, VAL_NUM)
         else:

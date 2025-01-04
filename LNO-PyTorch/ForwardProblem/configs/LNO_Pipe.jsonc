@@ -10,7 +10,7 @@
         "n_mode": 256,
         "n_dim" : 128,
         "n_head" : 8,
-        "n_layer": 3,
+        "n_layer": 2,
         "attn": "Attention_Vanilla",
         "act": "GELU"
     },
