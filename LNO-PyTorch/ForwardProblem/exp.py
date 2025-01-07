@@ -10,7 +10,6 @@ from module.setting import *
 import shutil
 
 
-
 parser = argparse.ArgumentParser(description="Latent Neural Operator PyTorch")
 parser.add_argument("--config", type=str, default=None, required=True)
 parser.add_argument("--device", type=str, default=None, required=True)
