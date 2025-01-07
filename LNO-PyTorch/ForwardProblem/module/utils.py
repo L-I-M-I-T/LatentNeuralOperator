@@ -7,8 +7,8 @@ import math
 from module.dataset import *
 from module.model import *
 from module.loss import *
+from module.setting import *
 from matplotlib import pyplot as plt
-from setting import *
 
 
 class Dict(dict):
