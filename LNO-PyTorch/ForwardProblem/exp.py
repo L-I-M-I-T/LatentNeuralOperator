@@ -6,7 +6,9 @@ from module.dataset import *
 from module.model import *
 from module.utils import *
 from module.loss import *
+from module.setting import *
 import shutil
+
 
 
 parser = argparse.ArgumentParser(description="Latent Neural Operator PyTorch")
@@ -352,7 +354,7 @@ if __name__ == "__main__":
     device = local_rank
     torch.cuda.set_device(device)
 
-    config_file = "./configs/{}.jsonc".format(arg.config)
+    config_file = os.path.join(CONFIG_PATH, "{}.jsonc".format(arg.config))
     config = Configuration(config_file)
     
     model_attr = dict()
@@ -365,9 +367,9 @@ if __name__ == "__main__":
     normalizer, model, loss, optimizer, scheduler \
     = get_model_data(config, model_attr, device)
     
-    log_dir = "./experiments/{}/log/".format(arg.exp)
-    checkpoint_dir = "./experiments/{}/checkpoint/".format(arg.exp)
-    src_dir = "./experiments/{}/src/".format(arg.exp)
+    log_dir = os.path.join(EXP_PATH, "{}/log/".format(arg.exp))
+    checkpoint_dir = os.path.join(EXP_PATH, "{}/checkpoint/".format(arg.exp))
+    src_dir = os.path.join(EXP_PATH, "{}/src/".format(arg.exp))
     save_para(arg, config)
     
     if not os.path.exists(src_dir):

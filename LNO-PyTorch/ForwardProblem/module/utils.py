@@ -8,6 +8,7 @@ from module.dataset import *
 from module.model import *
 from module.loss import *
 from matplotlib import pyplot as plt
+from setting import *
 
 
 class Dict(dict):
@@ -164,7 +165,7 @@ class Scheduler_NULL():
 
 
 def save_para(arg, config):
-    para_dir = "./experiments/{}/para/".format(arg.exp)
+    para_dir = os.path.join(EXP_PATH, "{}/para/".format(arg.exp))
     if not os.path.exists(para_dir):
         os.makedirs(para_dir)
     json.dump(arg.__dict__, open(para_dir + "arg.json", "w"), indent=2)
