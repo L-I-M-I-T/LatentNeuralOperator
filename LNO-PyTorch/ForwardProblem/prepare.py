@@ -61,8 +61,8 @@ if __name__ == "__main__":
             OBJ_RES = 241
             TRAIN_NUM = 1024
             VAL_NUM = 1024
-            x, y1, y2 = load_Darcy(os.path.join(DATA_PATH, "piececonst_r{}_N1024_smooth1.mat".format(SRC_RES), SRC_RES, OBJ_RES))
-            tx, ty1, ty2 = load_Darcy(os.path.join(DATA_PATH, "piececonst_r{}_N1024_smooth2.mat".format(SRC_RES), SRC_RES, OBJ_RES))
+            x, y1, y2 = load_Darcy(os.path.join(DATA_PATH, "piececonst_r{}_N1024_smooth1.mat".format(SRC_RES)), SRC_RES, OBJ_RES)
+            tx, ty1, ty2 = load_Darcy(os.path.join(DATA_PATH, "piececonst_r{}_N1024_smooth2.mat".format(SRC_RES)), SRC_RES, OBJ_RES)
             x = np.concatenate((x, tx), axis=0)
             y1 = np.concatenate((y1, ty1), axis=0)
             y2 = np.concatenate((y2, ty2), axis=0)
@@ -71,7 +71,7 @@ if __name__ == "__main__":
             SRC_RES = 64
             TRAIN_NUM = 1000
             VAL_NUM = 200
-            x, y1, y2 = load_NS2d(os.path.join(DATA_PATH, "NavierStokes_V1e-5_N1200_T20", SRC_RES))
+            x, y1, y2 = load_NS2d(os.path.join(DATA_PATH, "NavierStokes_V1e-5_N1200_T20"), SRC_RES)
             split_and_save(arg.data_name, x, y1, y2, TRAIN_NUM, VAL_NUM)
         elif arg.data_name == "Airfoil":
             TRAIN_NUM = 1000
