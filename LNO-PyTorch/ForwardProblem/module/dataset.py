@@ -1,5 +1,7 @@
 import torch
 import numpy as np
+import os
+from module.setting import *
 
 
 class LNO_dataset(torch.utils.data.Dataset):
@@ -77,7 +79,7 @@ class LNO_dataset(torch.utils.data.Dataset):
 
     def __init__(self, data_name, data_mode):
         super().__init__()
-        data_file = "./datas/{}_{}.npy".format(data_name, data_mode)
+        data_file = os.path.join(DATA_PATH, "{}_{}.npy".format(data_name, data_mode))
         self.dataset = np.load(data_file, allow_pickle=True).tolist()
         self.x = torch.tensor(self.dataset['x']).float()
         self.y1 = torch.tensor(self.dataset['y1']).float()
