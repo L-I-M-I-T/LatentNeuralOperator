@@ -135,28 +135,6 @@ class LNO(torch.nn.Module):
             r = self.proj(r)
             return r
     
-    class CrossAttention(torch.nn.Module):
-        def __init__(self, n_mode, n_dim, n_head, attn):
-            super().__init__()
-            self.n_mode = n_mode
-            self.n_dim = n_dim
-            self.n_head = n_head
-            self.Wq = torch.nn.Linear(self.n_dim, self.n_dim)
-            self.Wk = torch.nn.Linear(self.n_dim, self.n_dim)
-            self.Wv = torch.nn.Linear(self.n_dim, self.n_dim)
-            self.attn = attn
-            self.proj = torch.nn.Linear(self.n_dim, self.n_dim)
-        
-        def forward(self, y, x):
-            B, N, D = x.size()
-            _, M, _ = y.size()
-            q = self.Wq(y).view(B, M, self.n_head, D // self.n_head).permute(0, 2, 1, 3)
-            k = self.Wk(x).view(B, N, self.n_head, D // self.n_head).permute(0, 2, 1, 3)
-            v = self.Wv(x).view(B, N, self.n_head, D // self.n_head).permute(0, 2, 1, 3)
-            r = self.attn(q, k, v).permute(0, 2, 1, 3).contiguous().view(B, M, D)
-            r = self.proj(r)
-            return r
-    
     class AttentionBlock(torch.nn.Module):
         def __init__(self, n_mode, n_dim, n_head, attn, act):
             super().__init__()
