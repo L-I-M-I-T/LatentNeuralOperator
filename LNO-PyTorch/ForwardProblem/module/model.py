@@ -418,14 +418,15 @@ class LNO_triple(torch.nn.Module):
             module.weight.data.fill_(1.0)
             module.bias.data.zero_()
 
-    def forward(self, x, y):
-        x = self.trunk_projector(x)
+    def forward(self, x1, x2, y):
+        x1 = self.trunk_projector(x1)
+        x2 = self.trunk_projector(x2)
         y = self.branch_projector(y)
 
-        score_encode = self.attention_encoder(x)
+        score_encode = self.attention_encoder(x1)
         score_encode = torch.softmax(score_encode, dim=1)
         
-        score_decode = self.attention_decoder(x)
+        score_decode = self.attention_decoder(x2)
         score_decode = torch.softmax(score_decode, dim=-1)
         
         z = torch.einsum("bij,bic->bjc", score_encode, y)
