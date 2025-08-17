@@ -57,10 +57,10 @@ if __name__ == "__main__":
         not os.path.exists(os.path.join(DATA_PATH, "{}_val.npy".format(arg.data_name))):
         print("Preparing data...")
         if arg.data_name == "Darcy":
-            SRC_RES = 241
-            OBJ_RES = 241
-            TRAIN_NUM = 1024
-            VAL_NUM = 1024
+            SRC_RES = 421
+            OBJ_RES = 85
+            TRAIN_NUM = 1000
+            VAL_NUM = 200
             x, y1, y2 = load_Darcy(os.path.join(DATA_PATH, "piececonst_r{}_N1024_smooth1.mat".format(SRC_RES)), SRC_RES, OBJ_RES)
             tx, ty1, ty2 = load_Darcy(os.path.join(DATA_PATH, "piececonst_r{}_N1024_smooth2.mat".format(SRC_RES)), SRC_RES, OBJ_RES)
             x = np.concatenate((x, tx), axis=0)
@@ -91,7 +91,7 @@ if __name__ == "__main__":
             split_and_save(arg.data_name, x, y1, y2, TRAIN_NUM, VAL_NUM)
         elif arg.data_name == "Elasticity":
             TRAIN_NUM = 1000
-            VAL_NUM = 1000
+            VAL_NUM = 200
             rr = np.load(os.path.join(DATA_PATH, "Random_UnitCell_rr_10.npy"))
             sigma = np.load(os.path.join(DATA_PATH, "Random_UnitCell_sigma_10.npy"))
             theta = np.load(os.path.join(DATA_PATH, "Random_UnitCell_theta_10.npy"))
